@@ -1,6 +1,6 @@
 # IMTasy Warriors 🎮⚔️
 
-Un jeu de combat de monstres inspiré des classiques du genre, développé par notre équipe pendant le cours Web API.
+Un jeu de combat de monstres inspiré des classiques du genre, développé pendant le cours Web API.
 
 ## De quoi s'agit-il? 
 
@@ -14,8 +14,8 @@ La façon la plus simple de jouer:
 
 ```bash
 # Clone le repo
-git clone [url-du-repo]
-cd imtasy-warriors
+git clone https://github.com/JoshuaDsDl/IMTasy-Warriors.git
+cd IMTasy-Warriors
 
 # Lance tout le projet avec Docker Compose
 docker-compose up -d
@@ -60,7 +60,7 @@ Si tu préfères la méthode manuelle:
 
 ## Architecture du projet
 
-Notre jeu est construit autour d'une architecture microservices:
+Le jeu est construit autour d'une architecture microservices:
 
 - **AuthAPI** (port 5000): Gestion des utilisateurs
 - **PlayerAPI** (port 5001): Profils et stats des joueurs  
@@ -71,7 +71,7 @@ Notre jeu est construit autour d'une architecture microservices:
 
 ## Développé par
 
-Notre équipe d'étudiants de l'IMT pour le cours Web API, promo 2024-2025.
+Joshua DESCHIETERE, étudiant à l'IMT pour le cours Web API, promo 2024-2025.
 
 ## Bugs connus
 
