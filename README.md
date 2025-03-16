@@ -71,11 +71,4 @@ Le jeu est construit autour d'une architecture microservices:
 
 ## Développé par
 
-Joshua DESCHIETERE, étudiant à l'IMT pour le cours Web API, promo 2024-2025.
-
-## Bugs connus
-
-- Parfois les résultats de combat peuvent être un peu bizarres
-- L'interface peut ramer avec beaucoup de monstres
-
-N'hésite pas à contribuer si tu trouves des bugs! 
+Joshua DESCHIETERE, étudiant à l'IMT pour le cours Web API, promo 2024-2025. 
