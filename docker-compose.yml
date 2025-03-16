@@ -1,0 +1,192 @@
+version: "3.8"
+
+services:
+  authdb:
+    image: mongo:latest
+    container_name: authdb
+    networks:
+      - auth_network
+    volumes:
+      - mongo-data:/data/db
+
+  authapi:
+    build:
+      context: ./AuthAPI
+      dockerfile: Dockerfile
+    container_name: authapi
+    ports:
+      - "5000:5000"
+    environment:
+      DB_HOST: authdb
+      DB_PORT: 27017
+      API_PORT: 5000
+      PLAYER_API_URL: http://playerapi:5001
+    networks:
+      - auth_network
+    depends_on:
+      - authdb
+
+  playerdb:
+    image: mongo:latest
+    container_name: playerdb
+    networks:
+      - player_network
+    volumes:
+      - player-mongo-data:/data/db
+
+  playerapi:
+    build:
+      context: ./PlayerAPI
+      dockerfile: Dockerfile
+    container_name: playerapi
+    ports:
+      - "5001:5001"
+    environment:
+      DB_HOST: playerdb
+      DB_PORT: 27017
+      API_PORT: 5001
+      AUTH_API_URL: http://authapi:5000
+      MONSTERS_API_URL: http://monstersapi:5002
+    networks:
+      - player_network
+      - auth_network
+    depends_on:
+      - playerdb
+      - authapi
+
+  monsterdb:
+    image: mongo:latest
+    container_name: monsterdb
+    networks:
+      - monster_network
+    volumes:
+      - monster-mongo-data:/data/db
+
+  monstersapi:
+    build:
+      context: ./MonstersAPI
+      dockerfile: Dockerfile
+    container_name: monstersapi
+    ports:
+      - "5002:5002"
+    environment:
+      DB_HOST: monsterdb
+      DB_PORT: 27017
+      API_PORT: 5002
+      AUTH_API_URL: http://authapi:5000
+      PLAYER_API_URL: http://playerapi:5001
+    networks:
+      - monster_network
+      - auth_network
+      - player_network
+    depends_on:
+      - monsterdb
+      - authapi
+      - playerapi
+
+  summon_db:
+    image: mongo:latest
+    container_name: summon_db
+    networks:
+      - summon_network
+    volumes:
+      - summon-mongo-data:/data/db
+
+  summonapi:
+    build:
+      context: ./SummonAPI
+      dockerfile: Dockerfile
+    container_name: summonapi
+    ports:
+      - "5003:5003"
+    environment:
+      DB_HOST: summon_db
+      DB_PORT: 27017
+      API_PORT: 5003
+      MONSTERS_API_URL: http://monstersapi:5002
+      AUTH_API_URL: http://authapi:5000
+      PLAYER_API_URL: http://playerapi:5001
+      SUMMON_API_KEY: CLE_API_TRES_SAFE
+    networks:
+      - summon_network
+      - auth_network
+      - player_network
+      - monster_network
+    depends_on:
+      - summon_db
+      - monstersapi
+      - authapi
+      - playerapi
+
+  battledb:
+    image: mongo:latest
+    container_name: battledb
+    networks:
+      - battle_network
+    volumes:
+      - battle-mongo-data:/data/db
+
+  battleapi:
+    build:
+      context: ./BattleAPI
+      dockerfile: Dockerfile
+    container_name: battleapi
+    ports:
+      - "5004:5004"
+    environment:
+      DB_HOST: battledb
+      DB_PORT: 27017
+      API_PORT: 5004
+      MONSTERS_API_URL: http://monstersapi:5002
+      PLAYER_API_URL: http://playerapi:5001
+      AUTH_API_URL: http://authapi:5000
+    networks:
+      - battle_network
+      - monster_network
+      - player_network
+      - auth_network
+    depends_on:
+      - battledb
+      - monstersapi
+      - playerapi
+      - authapi
+
+  webserver:
+    build:
+      context: .
+      dockerfile: Dockerfile.webserver
+    container_name: webserver
+    ports:
+      - "8501:8501"
+    environment:
+      AUTH_API_URL: http://authapi:5000
+      PLAYER_API_URL: http://playerapi:5001
+      MONSTERS_API_URL: http://monstersapi:5002
+      SUMMON_API_URL: http://summonapi:5003
+      BATTLE_API_URL: http://battleapi:5004
+    networks:
+      - auth_network
+      - player_network
+      - monster_network
+      - summon_network
+      - battle_network
+    depends_on:
+      - authapi
+      - playerapi
+      - monstersapi
+      - summonapi
+      - battleapi
+
+volumes:
+  mongo-data:
+  player-mongo-data:
+  monster-mongo-data:
+  summon-mongo-data:
+  battle-mongo-data:
+
+networks:
+  auth_network:
+  player_network:
+  monster_network:
+  summon_network:
+  battle_network:
